@@ -1,0 +1,8 @@
+app_name: "online-library"
+db :
+  host: "localhost"
+  port: 5432
+  user: "admin"
+  password: "admin-pass"
+  name: "online-library"
+  sslmode: "disable"

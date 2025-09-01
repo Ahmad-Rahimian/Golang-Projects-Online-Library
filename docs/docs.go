@@ -38,9 +38,9 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "Add a new Book",
+                "description": "Add a new Book with file upload",
                 "consumes": [
-                    "application/json"
+                    "multipart/form-data"
                 ],
                 "produces": [
                     "application/json"
@@ -51,13 +51,45 @@ const docTemplate = `{
                 "summary": "Create new Book",
                 "parameters": [
                     {
-                        "description": "Book data",
-                        "name": "Book",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/domain.FreeBook"
-                        }
+                        "type": "string",
+                        "description": "Book Title",
+                        "name": "title",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Book Summary",
+                        "name": "summary",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Book Author",
+                        "name": "author",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Book Pages",
+                        "name": "pages",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "Cover Image",
+                        "name": "cover_image",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "PDF File",
+                        "name": "pdf_file",
+                        "in": "formData",
+                        "required": true
                     }
                 ],
                 "responses": {

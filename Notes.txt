@@ -1,0 +1,10 @@
+error:
+pq: permission denied for table free_books
+
+Solution:
+psql -U postgres -d online-library
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE free_books TO admin;
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE free_books TO admin;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO admin;
+

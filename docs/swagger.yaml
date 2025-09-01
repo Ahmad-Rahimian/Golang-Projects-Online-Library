@@ -41,15 +41,38 @@ paths:
       - books
     post:
       consumes:
-      - application/json
-      description: Add a new Book
+      - multipart/form-data
+      description: Add a new Book with file upload
       parameters:
-      - description: Book data
-        in: body
-        name: Book
+      - description: Book Title
+        in: formData
+        name: title
         required: true
-        schema:
-          $ref: '#/definitions/domain.FreeBook'
+        type: string
+      - description: Book Summary
+        in: formData
+        name: summary
+        type: string
+      - description: Book Author
+        in: formData
+        name: author
+        required: true
+        type: string
+      - description: Book Pages
+        in: formData
+        name: pages
+        required: true
+        type: integer
+      - description: Cover Image
+        in: formData
+        name: cover_image
+        required: true
+        type: file
+      - description: PDF File
+        in: formData
+        name: pdf_file
+        required: true
+        type: file
       produces:
       - application/json
       responses:

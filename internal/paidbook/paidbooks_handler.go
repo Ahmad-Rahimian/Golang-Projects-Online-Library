@@ -1,24 +1,29 @@
-package handler
+package paidbook
 
 import (
 	"database/sql"
 	"net/http"
 	"strconv"
 
-	"online-library/internal/domain"
-	"online-library/internal/service"
-
 	"github.com/gin-gonic/gin"
 )
 
-// @Summary      Get all books
-// @Description  Get list of all books
-// @Tags         books
+type Handler struct {
+	DB *sql.DB
+}
+
+func NewHandler(db *sql.DB) *Handler {
+	return &Handler{DB: db}
+}
+
+// @Summary      Get all paidbooks
+// @Description  Get list of all paidbooks
+// @Tags         paidbook
 // @Produce      json
-// @Success      200  {array}   domain.FreeBook
-// @Router       /books [get]
-func GetBooksHandler(c *gin.Context, db *sql.DB) {
-	books, err := service.GetAllBooks(db)
+// @Success      200  {array}   paidbook.PaidBook
+// @Router       /paidbook [get]
+func (h *Handler) GetBooksHandler(c *gin.Context) {
+	books, err := GetAll(h.DB)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -26,38 +31,39 @@ func GetBooksHandler(c *gin.Context, db *sql.DB) {
 	c.JSON(http.StatusOK, books)
 }
 
-// @Summary      Get Book by ID
-// @Description  Get a Book by its ID
-// @Tags         books
+// @Summary      Get paidbook by ID
+// @Description  Get a paidbook by its ID
+// @Tags         paidbook
 // @Produce      json
 // @Param        id   path      int  true  "Book ID"
-// @Success      200  {object}  domain.FreeBook
-// @Router       /books/{id} [get]
-func GetBookHandler(c *gin.Context, db *sql.DB) {
+// @Success      200  {object}  paidbook.PaidBook
+// @Router       /paidbook/{id} [get]
+func (h *Handler) GetBookHandler(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
-	books, err := service.GetBookByID(db, id)
+	book, err := GetByID(h.DB, id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, books)
+	c.JSON(http.StatusOK, book)
 }
 
-// @Summary      Create new Book
-// @Description  Add a new Book with file upload
-// @Tags         books
+// @Summary      Create new paidbook
+// @Description  Add a new paidbook with file upload
+// @Tags         paidbook
 // @Accept       multipart/form-data
 // @Produce      json
 // @Param        title       formData  string true  "Book Title"
 // @Param        summary     formData  string false "Book Summary"
 // @Param        author      formData  string true  "Book Author"
 // @Param        pages       formData  int    true  "Book Pages"
+// @Param        price       formData  int	  true  "Book Price"
 // @Param        cover_image formData  file   true  "Cover Image"
 // @Param        pdf_file    formData  file   true  "PDF File"
 // @Success      201  {string}  string "created"
-// @Router       /books [post]
-func CreateBookHandler(c *gin.Context, db *sql.DB) {
-	var book domain.FreeBook
+// @Router       /paidbook [post]
+func (h *Handler) CreateBookHandler(c *gin.Context) {
+	var book PaidBook
 
 	book.Title = c.PostForm("title")
 	summary := c.PostForm("summary")
@@ -67,6 +73,8 @@ func CreateBookHandler(c *gin.Context, db *sql.DB) {
 	book.Author = c.PostForm("author")
 	pages, _ := strconv.Atoi(c.PostForm("pages"))
 	book.Pages = pages
+	price, _ := strconv.Atoi(c.PostForm("price"))
+	book.Price = price
 
 	// Handle cover image upload
 	coverFile, err := c.FormFile("cover_image")
@@ -90,7 +98,7 @@ func CreateBookHandler(c *gin.Context, db *sql.DB) {
 		book.Pdf_file = pdfPath
 	}
 
-	if err := service.CreateBook(db, book); err != nil {
+	if err := CreateBook(h.DB, book); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -98,9 +106,9 @@ func CreateBookHandler(c *gin.Context, db *sql.DB) {
 	c.JSON(http.StatusCreated, gin.H{"message": "Book created", "book": book})
 }
 
-// @Summary 	Update Book
-// @Description Update Book details by ID (with optional new files)
-// @Tags 		books
+// @Summary 	Update paidbook
+// @Description Update paidbook details by ID (with optional new files)
+// @Tags 		paidbook
 // @Accept 		multipart/form-data
 // @Produce 	json
 // @Param 		id 			path 	 int 	true  "Book ID"
@@ -108,34 +116,42 @@ func CreateBookHandler(c *gin.Context, db *sql.DB) {
 // @Param 		summary 	formData string false "Book Summary"
 // @Param 		author 		formData string false "Book Author"
 // @Param 		pages 		formData int 	false "Book Pages"
+// @Param 		price 		formData int	false "Book Price"
 // @Param 		cover_image formData file 	false "Cover Image"
 // @Param 		pdf_file 	formData file 	false "PDF File"
 // @Success 	200 {string}	string 	"updated"
-// @Router 		/books/{id} [put]
-func UpdateBookHandler(c *gin.Context, db *sql.DB) {
+// @Router 		/paidbook/{id} [put]
+func (h *Handler) UpdateBookHandler(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 
 	title := c.PostForm("title")
 	summary := c.PostForm("summary")
 	author := c.PostForm("author")
 	pages, _ := strconv.Atoi(c.PostForm("pages"))
+	price, _ := strconv.Atoi(c.PostForm("price"))
 
-	coverFile, err1 := c.FormFile("cover_image")
-	pdfFile, err2 := c.FormFile("pdf_file")
+	coverFile, _ := c.FormFile("cover_image")
+	pdfFile, _ := c.FormFile("pdf_file")
 
 	var coverPath, pdfPath string
 
-	if err1 == nil {
-		coverPath = "/uploads/images" + coverFile.Filename
-		c.SaveUploadedFile(coverFile, coverPath)
+	if coverFile != nil {
+		coverPath = "uploads/images/" + coverFile.Filename
+		if err := c.SaveUploadedFile(coverFile, coverPath); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to save cover image"})
+			return
+		}
 	}
 
-	if err2 == nil {
-		pdfPath = "/uploads/pdfs" + pdfFile.Filename
-		c.SaveUploadedFile(pdfFile, pdfPath)
+	if pdfFile != nil {
+		pdfPath = "uploads/pdfs/" + pdfFile.Filename
+		if err := c.SaveUploadedFile(pdfFile, pdfPath); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to save pdf file"})
+			return
+		}
 	}
 
-	oldBook, err := service.GetBookByID(db, id)
+	oldBook, err := GetByID(h.DB, id)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "book not found"})
 		return
@@ -148,17 +164,25 @@ func UpdateBookHandler(c *gin.Context, db *sql.DB) {
 		pdfPath = oldBook.Pdf_file
 	}
 
-	book := domain.FreeBook{
-		ID:          id,
-		Title:       title,
-		Summary:     &summary,
-		Author:      author,
-		Cover_image: coverPath,
-		Pdf_file:    pdfPath,
-		Pages:       pages,
+	var summaryPtr *string
+	if summary != "" {
+		summaryPtr = &summary
+	} else {
+		summaryPtr = oldBook.Summary
 	}
 
-	if err := service.UpdateBook(db, book); err != nil {
+	book := PaidBook{
+		ID:          id,
+		Title:       ifEmpty(title, oldBook.Title),
+		Summary:     summaryPtr,
+		Author:      ifEmpty(author, oldBook.Author),
+		Cover_image: coverPath,
+		Pdf_file:    pdfPath,
+		Pages:       ifZero(pages, oldBook.Pages),
+		Price:       ifZero(price, oldBook.Price),
+	}
+
+	if err := UpdateBook(h.DB, book); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -166,17 +190,32 @@ func UpdateBookHandler(c *gin.Context, db *sql.DB) {
 	c.JSON(http.StatusOK, gin.H{"message": "Book updated", "book": book})
 }
 
-// @Summary      Delete Book
-// @Description  Delete a Book by ID
-// @Tags         books
+// @Summary      Delete paidbook
+// @Description  Delete a paidbook by ID
+// @Tags         paidbook
 // @Param        id   path      int  true  "Book ID"
 // @Success      200  {string}  string "deleted"
-// @Router       /books/{id} [delete]
-func DeleteBookHandler(c *gin.Context, db *sql.DB) {
+// @Router       /paidbook/{id} [delete]
+func (h *Handler) DeleteBookHandler(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
-	if err := service.DeleteBook(db, id); err != nil {
+	if err := DeleteBook(h.DB, id); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "Book deleted"})
+}
+
+// helper funcs
+func ifEmpty(val, fallback string) string {
+	if val == "" {
+		return fallback
+	}
+	return val
+}
+
+func ifZero(val, fallback int) int {
+	if val == 0 {
+		return fallback
+	}
+	return val
 }

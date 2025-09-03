@@ -15,30 +15,30 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/books": {
+        "/article": {
             "get": {
-                "description": "Get list of all books",
+                "description": "Get list of all articles",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "books"
+                    "article"
                 ],
-                "summary": "Get all books",
+                "summary": "Get all articles",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/domain.FreeBook"
+                                "$ref": "#/definitions/article.Article"
                             }
                         }
                     }
                 }
             },
             "post": {
-                "description": "Add a new Book with file upload",
+                "description": "Add a new article with file upload",
                 "consumes": [
                     "multipart/form-data"
                 ],
@@ -46,9 +46,203 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "books"
+                    "article"
                 ],
-                "summary": "Create new Book",
+                "summary": "Create new article",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Article Title",
+                        "name": "title",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Article Summary",
+                        "name": "summary",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Article Author",
+                        "name": "author",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "Cover Image",
+                        "name": "cover_image",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "PDF File",
+                        "name": "pdf_file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "created",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/article/{id}": {
+            "get": {
+                "description": "Get a article by its ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "article"
+                ],
+                "summary": "Get article by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Article ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/article.Article"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update article details by ID (with optional new files)",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "article"
+                ],
+                "summary": "Update article",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Article ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Article Title",
+                        "name": "title",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Article Summary",
+                        "name": "summary",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Article Author",
+                        "name": "author",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "file",
+                        "description": "Cover Image",
+                        "name": "cover_image",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "file",
+                        "description": "PDF File",
+                        "name": "pdf_file",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "updated",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a article by ID",
+                "tags": [
+                    "article"
+                ],
+                "summary": "Delete article",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Article ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "deleted",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/freebook": {
+            "get": {
+                "description": "Get list of all freebooks",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "freebook"
+                ],
+                "summary": "Get all freebooks",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/freebook.FreeBook"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Add a new freebook with file upload",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "freebook"
+                ],
+                "summary": "Create new freebook",
                 "parameters": [
                     {
                         "type": "string",
@@ -102,16 +296,16 @@ const docTemplate = `{
                 }
             }
         },
-        "/books/{id}": {
+        "/freebook/{id}": {
             "get": {
-                "description": "Get a Book by its ID",
+                "description": "Get a freebook by its ID",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "books"
+                    "freebook"
                 ],
-                "summary": "Get Book by ID",
+                "summary": "Get freebook by ID",
                 "parameters": [
                     {
                         "type": "integer",
@@ -125,23 +319,23 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/domain.FreeBook"
+                            "$ref": "#/definitions/freebook.FreeBook"
                         }
                     }
                 }
             },
             "put": {
-                "description": "Update Book details by ID",
+                "description": "Update freebook details by ID (with optional new files)",
                 "consumes": [
-                    "application/json"
+                    "multipart/form-data"
                 ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "books"
+                    "freebook"
                 ],
-                "summary": "Update Book",
+                "summary": "Update freebook",
                 "parameters": [
                     {
                         "type": "integer",
@@ -151,13 +345,40 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "Updated Book",
-                        "name": "Book",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/domain.FreeBook"
-                        }
+                        "type": "string",
+                        "description": "Book Title",
+                        "name": "title",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Book Summary",
+                        "name": "summary",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Book Author",
+                        "name": "author",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Book Pages",
+                        "name": "pages",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "file",
+                        "description": "Cover Image",
+                        "name": "cover_image",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "file",
+                        "description": "PDF File",
+                        "name": "pdf_file",
+                        "in": "formData"
                     }
                 ],
                 "responses": {
@@ -170,11 +391,230 @@ const docTemplate = `{
                 }
             },
             "delete": {
-                "description": "Delete a Book by ID",
+                "description": "Delete a freebook by ID",
                 "tags": [
-                    "books"
+                    "freebook"
                 ],
-                "summary": "Delete Book",
+                "summary": "Delete freebook",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Book ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "deleted",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/paidbook": {
+            "get": {
+                "description": "Get list of all paidbooks",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "paidbook"
+                ],
+                "summary": "Get all paidbooks",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/paidbook.PaidBook"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Add a new paidbook with file upload",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "paidbook"
+                ],
+                "summary": "Create new paidbook",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Book Title",
+                        "name": "title",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Book Summary",
+                        "name": "summary",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Book Author",
+                        "name": "author",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Book Pages",
+                        "name": "pages",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Book Price",
+                        "name": "price",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "Cover Image",
+                        "name": "cover_image",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "PDF File",
+                        "name": "pdf_file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "created",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/paidbook/{id}": {
+            "get": {
+                "description": "Get a paidbook by its ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "paidbook"
+                ],
+                "summary": "Get paidbook by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Book ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/paidbook.PaidBook"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update paidbook details by ID (with optional new files)",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "paidbook"
+                ],
+                "summary": "Update paidbook",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Book ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Book Title",
+                        "name": "title",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Book Summary",
+                        "name": "summary",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Book Author",
+                        "name": "author",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Book Pages",
+                        "name": "pages",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Book Price",
+                        "name": "price",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "file",
+                        "description": "Cover Image",
+                        "name": "cover_image",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "file",
+                        "description": "PDF File",
+                        "name": "pdf_file",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "updated",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a paidbook by ID",
+                "tags": [
+                    "paidbook"
+                ],
+                "summary": "Delete paidbook",
                 "parameters": [
                     {
                         "type": "integer",
@@ -196,7 +636,30 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "domain.FreeBook": {
+        "article.Article": {
+            "type": "object",
+            "properties": {
+                "author": {
+                    "type": "string"
+                },
+                "cover_image": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "pdf_file": {
+                    "type": "string"
+                },
+                "summary": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "freebook.FreeBook": {
             "type": "object",
             "properties": {
                 "author": {
@@ -213,6 +676,35 @@ const docTemplate = `{
                 },
                 "pdf_file": {
                     "type": "string"
+                },
+                "summary": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "paidbook.PaidBook": {
+            "type": "object",
+            "properties": {
+                "author": {
+                    "type": "string"
+                },
+                "cover_image": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "pages": {
+                    "type": "integer"
+                },
+                "pdf_file": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "integer"
                 },
                 "summary": {
                     "type": "string"

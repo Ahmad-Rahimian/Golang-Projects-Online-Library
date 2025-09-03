@@ -1,9 +1,13 @@
 {
-    "cSpell.words": [
-        "dbname",
-        "gonic",
-        "pdfs",
-        "sslmode",
-        "swaggo"
-    ]
+  "cSpell.words": [
+    "dbname",
+    "freebook",
+    "gonic",
+    "paidbook",
+    "paidbooks",
+    "pdfs",
+    "psql",
+    "sslmode",
+    "swaggo"
+  ]
 }

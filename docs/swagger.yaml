@@ -1,6 +1,21 @@
 basePath: /
 definitions:
-  domain.FreeBook:
+  article.Article:
+    properties:
+      author:
+        type: string
+      cover_image:
+        type: string
+      id:
+        type: integer
+      pdf_file:
+        type: string
+      summary:
+        type: string
+      title:
+        type: string
+    type: object
+  freebook.FreeBook:
     properties:
       author:
         type: string
@@ -17,6 +32,25 @@ definitions:
       title:
         type: string
     type: object
+  paidbook.PaidBook:
+    properties:
+      author:
+        type: string
+      cover_image:
+        type: string
+      id:
+        type: integer
+      pages:
+        type: integer
+      pdf_file:
+        type: string
+      price:
+        type: integer
+      summary:
+        type: string
+      title:
+        type: string
+    type: object
 host: localhost:8080
 info:
   contact: {}
@@ -24,9 +58,9 @@ info:
   title: Online Library API
   version: "1.0"
 paths:
-  /books:
+  /article:
     get:
-      description: Get list of all books
+      description: Get list of all articles
       produces:
       - application/json
       responses:
@@ -34,15 +68,145 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/domain.FreeBook'
+              $ref: '#/definitions/article.Article'
             type: array
-      summary: Get all books
+      summary: Get all articles
       tags:
-      - books
+      - article
     post:
       consumes:
       - multipart/form-data
-      description: Add a new Book with file upload
+      description: Add a new article with file upload
+      parameters:
+      - description: Article Title
+        in: formData
+        name: title
+        required: true
+        type: string
+      - description: Article Summary
+        in: formData
+        name: summary
+        required: true
+        type: string
+      - description: Article Author
+        in: formData
+        name: author
+        required: true
+        type: string
+      - description: Cover Image
+        in: formData
+        name: cover_image
+        required: true
+        type: file
+      - description: PDF File
+        in: formData
+        name: pdf_file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: created
+          schema:
+            type: string
+      summary: Create new article
+      tags:
+      - article
+  /article/{id}:
+    delete:
+      description: Delete a article by ID
+      parameters:
+      - description: Article ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: deleted
+          schema:
+            type: string
+      summary: Delete article
+      tags:
+      - article
+    get:
+      description: Get a article by its ID
+      parameters:
+      - description: Article ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/article.Article'
+      summary: Get article by ID
+      tags:
+      - article
+    put:
+      consumes:
+      - multipart/form-data
+      description: Update article details by ID (with optional new files)
+      parameters:
+      - description: Article ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Article Title
+        in: formData
+        name: title
+        type: string
+      - description: Article Summary
+        in: formData
+        name: summary
+        type: string
+      - description: Article Author
+        in: formData
+        name: author
+        type: string
+      - description: Cover Image
+        in: formData
+        name: cover_image
+        type: file
+      - description: PDF File
+        in: formData
+        name: pdf_file
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: updated
+          schema:
+            type: string
+      summary: Update article
+      tags:
+      - article
+  /freebook:
+    get:
+      description: Get list of all freebooks
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/freebook.FreeBook'
+            type: array
+      summary: Get all freebooks
+      tags:
+      - freebook
+    post:
+      consumes:
+      - multipart/form-data
+      description: Add a new freebook with file upload
       parameters:
       - description: Book Title
         in: formData
@@ -80,12 +244,12 @@ paths:
           description: created
           schema:
             type: string
-      summary: Create new Book
+      summary: Create new freebook
       tags:
-      - books
-  /books/{id}:
+      - freebook
+  /freebook/{id}:
     delete:
-      description: Delete a Book by ID
+      description: Delete a freebook by ID
       parameters:
       - description: Book ID
         in: path
@@ -97,11 +261,11 @@ paths:
           description: deleted
           schema:
             type: string
-      summary: Delete Book
+      summary: Delete freebook
       tags:
-      - books
+      - freebook
     get:
-      description: Get a Book by its ID
+      description: Get a freebook by its ID
       parameters:
       - description: Book ID
         in: path
@@ -114,26 +278,44 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/domain.FreeBook'
-      summary: Get Book by ID
+            $ref: '#/definitions/freebook.FreeBook'
+      summary: Get freebook by ID
       tags:
-      - books
+      - freebook
     put:
       consumes:
-      - application/json
-      description: Update Book details by ID
+      - multipart/form-data
+      description: Update freebook details by ID (with optional new files)
       parameters:
       - description: Book ID
         in: path
         name: id
         required: true
         type: integer
-      - description: Updated Book
-        in: body
-        name: Book
-        required: true
-        schema:
-          $ref: '#/definitions/domain.FreeBook'
+      - description: Book Title
+        in: formData
+        name: title
+        type: string
+      - description: Book Summary
+        in: formData
+        name: summary
+        type: string
+      - description: Book Author
+        in: formData
+        name: author
+        type: string
+      - description: Book Pages
+        in: formData
+        name: pages
+        type: integer
+      - description: Cover Image
+        in: formData
+        name: cover_image
+        type: file
+      - description: PDF File
+        in: formData
+        name: pdf_file
+        type: file
       produces:
       - application/json
       responses:
@@ -141,7 +323,154 @@ paths:
           description: updated
           schema:
             type: string
-      summary: Update Book
+      summary: Update freebook
       tags:
-      - books
+      - freebook
+  /paidbook:
+    get:
+      description: Get list of all paidbooks
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/paidbook.PaidBook'
+            type: array
+      summary: Get all paidbooks
+      tags:
+      - paidbook
+    post:
+      consumes:
+      - multipart/form-data
+      description: Add a new paidbook with file upload
+      parameters:
+      - description: Book Title
+        in: formData
+        name: title
+        required: true
+        type: string
+      - description: Book Summary
+        in: formData
+        name: summary
+        type: string
+      - description: Book Author
+        in: formData
+        name: author
+        required: true
+        type: string
+      - description: Book Pages
+        in: formData
+        name: pages
+        required: true
+        type: integer
+      - description: Book Price
+        in: formData
+        name: price
+        required: true
+        type: integer
+      - description: Cover Image
+        in: formData
+        name: cover_image
+        required: true
+        type: file
+      - description: PDF File
+        in: formData
+        name: pdf_file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: created
+          schema:
+            type: string
+      summary: Create new paidbook
+      tags:
+      - paidbook
+  /paidbook/{id}:
+    delete:
+      description: Delete a paidbook by ID
+      parameters:
+      - description: Book ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: deleted
+          schema:
+            type: string
+      summary: Delete paidbook
+      tags:
+      - paidbook
+    get:
+      description: Get a paidbook by its ID
+      parameters:
+      - description: Book ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/paidbook.PaidBook'
+      summary: Get paidbook by ID
+      tags:
+      - paidbook
+    put:
+      consumes:
+      - multipart/form-data
+      description: Update paidbook details by ID (with optional new files)
+      parameters:
+      - description: Book ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Book Title
+        in: formData
+        name: title
+        type: string
+      - description: Book Summary
+        in: formData
+        name: summary
+        type: string
+      - description: Book Author
+        in: formData
+        name: author
+        type: string
+      - description: Book Pages
+        in: formData
+        name: pages
+        type: integer
+      - description: Book Price
+        in: formData
+        name: price
+        type: integer
+      - description: Cover Image
+        in: formData
+        name: cover_image
+        type: file
+      - description: PDF File
+        in: formData
+        name: pdf_file
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: updated
+          schema:
+            type: string
+      summary: Update paidbook
+      tags:
+      - paidbook
 swagger: "2.0"

@@ -1,10 +1,67 @@
-error:
+Create Tables:
+
+
+
+# su - postgres
+# psql -U postgres -d online-library
+
+
+CREATE TABLE free_books (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    summary TEXT,
+    author VARCHAR(255) NOT NULL,
+    cover_image VARCHAR(500),  
+    pdf_file VARCHAR(500),
+    pages INT
+);
+
+
+CREATE TABLE paid_books (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    summary TEXT,
+    author VARCHAR(255) NOT NULL,
+    cover_image VARCHAR(500),
+    pdf_file VARCHAR(500),
+    pages INT,
+    price NUMERIC(10,2) NOT NULL  
+);
+
+
+CREATE TABLE articles (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    short_summary TEXT NOT NULL,
+    full_text TEXT NOT NULL,
+    author VARCHAR(255) NOT NULL,
+    cover_image VARCHAR(500),
+    reading_time INT
+);
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE free_books TO admin;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public
+
+----------------------------------------------------------------------
+Errors:
+
 pq: permission denied for table free_books
 
 Solution:
 psql -U postgres -d online-library
 GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE free_books TO admin;
-GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE free_books TO admin;
 ALTER DEFAULT PRIVILEGES IN SCHEMA public
 GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO admin;
 
+----
+
+pq: permission denied for sequence paid_books_id_seq
+
+
+ALTER TABLE free_books OWNER TO admin;
+ALTER TABLE paid_books OWNER TO admin;
+ALTER TABLE articles OWNER TO admin;
+
+ALTER SEQUENCE free_books_id_seq OWNER TO admin;
+ALTER SEQUENCE paid_books_id_seq OWNER TO admin;
+ALTER SEQUENCE articles_id_seq OWNER TO admin;

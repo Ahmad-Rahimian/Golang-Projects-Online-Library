@@ -6,7 +6,7 @@ import (
 )
 
 func GetAll(db *sql.DB) ([]PaidBook, error) {
-	rows, err := db.Query("SELECT id , title , summary , author, cover_image , pages,price FROM paid_books")
+	rows, err := db.Query("SELECT id , title , summary , author, cover_image , pages , price FROM paid_books")
 	if err != nil {
 		log.Println("Error fetching books :", err)
 		return nil, err

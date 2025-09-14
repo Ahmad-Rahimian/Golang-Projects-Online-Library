@@ -59,8 +59,15 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Article Summary",
-                        "name": "summary",
+                        "description": "Article Short Summary",
+                        "name": "short_summary",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Article Full Text",
+                        "name": "full_text",
                         "in": "formData",
                         "required": true
                     },
@@ -79,11 +86,10 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "file",
-                        "description": "PDF File",
-                        "name": "pdf_file",
-                        "in": "formData",
-                        "required": true
+                        "type": "integer",
+                        "description": "Article Reading Time",
+                        "name": "reading_time",
+                        "in": "formData"
                     }
                 ],
                 "responses": {
@@ -152,8 +158,14 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Article Summary",
-                        "name": "summary",
+                        "description": "Article Short Summary",
+                        "name": "short_summary",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Article Full Text",
+                        "name": "full_text",
                         "in": "formData"
                     },
                     {
@@ -169,9 +181,9 @@ const docTemplate = `{
                         "in": "formData"
                     },
                     {
-                        "type": "file",
-                        "description": "PDF File",
-                        "name": "pdf_file",
+                        "type": "integer",
+                        "description": "Article Reading Time",
+                        "name": "reading_time",
                         "in": "formData"
                     }
                 ],
@@ -645,13 +657,16 @@ const docTemplate = `{
                 "cover_image": {
                     "type": "string"
                 },
+                "full_text": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
                 },
-                "pdf_file": {
-                    "type": "string"
+                "reading_time": {
+                    "type": "integer"
                 },
-                "summary": {
+                "short_summary": {
                     "type": "string"
                 },
                 "title": {

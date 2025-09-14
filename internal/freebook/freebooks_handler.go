@@ -8,12 +8,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// Handler ساختار هندلر برای دسترسی به سرویس‌ها
 type Handler struct {
 	DB *sql.DB
 }
 
-// NewHandler سازنده‌ی هندلر
 func NewHandler(db *sql.DB) *Handler {
 	return &Handler{DB: db}
 }
@@ -24,7 +22,7 @@ func NewHandler(db *sql.DB) *Handler {
 // @Produce      json
 // @Success      200  {array}   FreeBook
 // @Router       /freebook [get]
-func (h *Handler) GetBooksHandler(c *gin.Context) {
+func (h *Handler) GetFreeBooksHandler(c *gin.Context) {
 	books, err := GetAll(h.DB)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -40,7 +38,7 @@ func (h *Handler) GetBooksHandler(c *gin.Context) {
 // @Param        id   path      int  true  "Book ID"
 // @Success      200  {object}  FreeBook
 // @Router       /freebook/{id} [get]
-func (h *Handler) GetBookHandler(c *gin.Context) {
+func (h *Handler) GetFreeBookHandler(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	book, err := GetByID(h.DB, id)
 	if err != nil {
@@ -63,7 +61,7 @@ func (h *Handler) GetBookHandler(c *gin.Context) {
 // @Param        pdf_file    formData  file   true  "PDF File"
 // @Success      201  {string}  string "created"
 // @Router       /freebook [post]
-func (h *Handler) CreateBookHandler(c *gin.Context) {
+func (h *Handler) CreateFreeBookHandler(c *gin.Context) {
 	var book FreeBook
 
 	book.Title = c.PostForm("title")
@@ -97,7 +95,7 @@ func (h *Handler) CreateBookHandler(c *gin.Context) {
 		book.Pdf_file = pdfPath
 	}
 
-	if err := CreateBook(h.DB, book); err != nil {
+	if err := CreateFreeBook(h.DB, book); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -119,7 +117,7 @@ func (h *Handler) CreateBookHandler(c *gin.Context) {
 // @Param 		pdf_file 	formData file 	false "PDF File"
 // @Success 	200 {string}	string 	"updated"
 // @Router 		/freebook/{id} [put]
-func (h *Handler) UpdateBookHandler(c *gin.Context) {
+func (h *Handler) UpdateFreeBookHandler(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 
 	title := c.PostForm("title")
@@ -178,7 +176,7 @@ func (h *Handler) UpdateBookHandler(c *gin.Context) {
 		Pages:       ifZero(pages, oldBook.Pages),
 	}
 
-	if err := UpdateBook(h.DB, book); err != nil {
+	if err := UpdateFreeBook(h.DB, book); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -192,9 +190,9 @@ func (h *Handler) UpdateBookHandler(c *gin.Context) {
 // @Param        id   path      int  true  "Book ID"
 // @Success      200  {string}  string "deleted"
 // @Router       /freebook/{id} [delete]
-func (h *Handler) DeleteBookHandler(c *gin.Context) {
+func (h *Handler) DeleteFreeBookHandler(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
-	if err := DeleteBook(h.DB, id); err != nil {
+	if err := DeleteFreeBook(h.DB, id); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

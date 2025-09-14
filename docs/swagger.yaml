@@ -6,11 +6,13 @@ definitions:
         type: string
       cover_image:
         type: string
+      full_text:
+        type: string
       id:
         type: integer
-      pdf_file:
-        type: string
-      summary:
+      reading_time:
+        type: integer
+      short_summary:
         type: string
       title:
         type: string
@@ -83,9 +85,14 @@ paths:
         name: title
         required: true
         type: string
-      - description: Article Summary
+      - description: Article Short Summary
         in: formData
-        name: summary
+        name: short_summary
+        required: true
+        type: string
+      - description: Article Full Text
+        in: formData
+        name: full_text
         required: true
         type: string
       - description: Article Author
@@ -98,11 +105,10 @@ paths:
         name: cover_image
         required: true
         type: file
-      - description: PDF File
+      - description: Article Reading Time
         in: formData
-        name: pdf_file
-        required: true
-        type: file
+        name: reading_time
+        type: integer
       produces:
       - application/json
       responses:
@@ -162,9 +168,13 @@ paths:
         in: formData
         name: title
         type: string
-      - description: Article Summary
+      - description: Article Short Summary
         in: formData
-        name: summary
+        name: short_summary
+        type: string
+      - description: Article Full Text
+        in: formData
+        name: full_text
         type: string
       - description: Article Author
         in: formData
@@ -174,10 +184,10 @@ paths:
         in: formData
         name: cover_image
         type: file
-      - description: PDF File
+      - description: Article Reading Time
         in: formData
-        name: pdf_file
-        type: file
+        name: reading_time
+        type: integer
       produces:
       - application/json
       responses:

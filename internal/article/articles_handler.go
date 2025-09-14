@@ -53,21 +53,27 @@ func (h *Handler) GetArticleHandler(c *gin.Context) {
 // @Tags         article
 // @Accept       multipart/form-data
 // @Produce      json
-// @Param        title       formData  string true  "Article Title"
-// @Param        summary     formData  string true  "Article Summary"
-// @Param        author      formData  string true  "Article Author"
-// @Param        cover_image formData  file   true  "Cover Image"
-// @Param        pdf_file    formData  file   true  "PDF File"
+// @Param        title       		formData  string true  "Article Title"
+// @Param        short_summary      formData  string true  "Article Short Summary"
+// @Param        full_text      	formData  string true  "Article Full Text"
+// @Param        author      		formData  string true  "Article Author"
+// @Param        cover_image 		formData  file   true  "Cover Image"
+// @Param        reading_time      	formData  int	 false  "Article Reading Time"
 // @Success      201  {string}  string "created"
 // @Router       /article [post]
 func (h *Handler) CreateArticleHandler(c *gin.Context) {
 	var article Article
 
 	article.Title = c.PostForm("title")
-	summary := c.PostForm("summary")
-	if summary != "" {
-		article.Summary = summary
+	short_summary := c.PostForm("short_summary")
+	if short_summary != "" {
+		article.Short_summary = short_summary
 	}
+	full_text := c.PostForm("full_text")
+	if full_text != "" {
+		article.Full_text = full_text
+	}
+
 	article.Author = c.PostForm("author")
 
 	// Handle cover image upload
@@ -80,17 +86,8 @@ func (h *Handler) CreateArticleHandler(c *gin.Context) {
 		}
 		article.Cover_image = coverPath
 	}
-
-	// Handle pdf file upload
-	pdfFile, err := c.FormFile("pdf_file")
-	if err == nil {
-		pdfPath := "uploads/pdfs/" + pdfFile.Filename
-		if err := c.SaveUploadedFile(pdfFile, pdfPath); err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to save pdf file"})
-			return
-		}
-		article.Pdf_file = &pdfPath
-	}
+	reading_time, _ := strconv.Atoi(c.PostForm("reading_time"))
+	article.Reading_time = &reading_time
 
 	if err := CreateArticle(h.DB, article); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -105,38 +102,30 @@ func (h *Handler) CreateArticleHandler(c *gin.Context) {
 // @Tags 		article
 // @Accept 		multipart/form-data
 // @Produce 	json
-// @Param 		id 			path 	 int 	true  "Article ID"
-// @Param 		title 		formData string false "Article Title"
-// @Param 		summary 	formData string false "Article Summary"
-// @Param 		author 		formData string false "Article Author"
-// @Param 		cover_image formData file 	false "Cover Image"
-// @Param 		pdf_file 	formData file 	false "PDF File"
+// @Param 		id 				path 	 int 	true  "Article ID"
+// @Param 		title 			formData string false "Article Title"
+// @Param       short_summary   formData string false  "Article Short Summary"
+// @Param       full_text      	formData string false  "Article Full Text"
+// @Param 		author 			formData string false "Article Author"
+// @Param 		cover_image 	formData file 	false "Cover Image"
+// @Param       reading_time    formData int	false  "Article Reading Time"
 // @Success 	200 {string}	string 	"updated"
 // @Router 		/article/{id} [put]
 func (h *Handler) UpdateArticleHandler(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 
 	title := c.PostForm("title")
-	summary := c.PostForm("summary")
+	short_summary := c.PostForm("short_summary")
+	full_text := c.PostForm("full_text")
 	author := c.PostForm("author")
-
 	coverFile, _ := c.FormFile("cover_image")
-	pdfFile, _ := c.FormFile("pdf_file")
+	reading_time, _ := strconv.Atoi(c.PostForm("reading_time"))
 
-	var coverPath, pdfPath string
-
+	var coverPath string
 	if coverFile != nil {
 		coverPath = "uploads/images/" + coverFile.Filename
 		if err := c.SaveUploadedFile(coverFile, coverPath); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to save cover image"})
-			return
-		}
-	}
-
-	if pdfFile != nil {
-		pdfPath = "uploads/pdfs/" + pdfFile.Filename
-		if err := c.SaveUploadedFile(pdfFile, pdfPath); err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to save pdf file"})
 			return
 		}
 	}
@@ -146,28 +135,25 @@ func (h *Handler) UpdateArticleHandler(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Article not found"})
 		return
 	}
-
 	if coverPath == "" {
 		coverPath = oldArticle.Cover_image
 	}
-	if pdfPath == "" {
-		pdfPath = *oldArticle.Pdf_file
-	}
 
-	var summaryPtr string
-	if summary != "" {
-		summaryPtr = summary
+	var short_summaryPtr string
+	if short_summary != "" {
+		short_summaryPtr = short_summary
 	} else {
-		summaryPtr = oldArticle.Summary
+		short_summaryPtr = oldArticle.Short_summary
 	}
 
 	Article := Article{
-		ID:          id,
-		Title:       ifEmpty(title, oldArticle.Title),
-		Summary:     summaryPtr,
-		Author:      ifEmpty(author, oldArticle.Author),
-		Cover_image: coverPath,
-		Pdf_file:    &pdfPath,
+		ID:            id,
+		Title:         ifEmpty(title, oldArticle.Title),
+		Short_summary: short_summaryPtr,
+		Full_text:     ifEmpty(full_text, oldArticle.Full_text),
+		Author:        ifEmpty(author, oldArticle.Author),
+		Cover_image:   coverPath,
+		Reading_time:  &reading_time,
 	}
 
 	if err := UpdateArticle(h.DB, Article); err != nil {

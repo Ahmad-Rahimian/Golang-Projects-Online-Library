@@ -24,22 +24,22 @@ func SetupRouter(db *sql.DB) *gin.Engine {
 
 	freebookRoutes := r.Group("/freebook")
 	{
-		freebookRoutes.GET("", fbHandler.GetBooksHandler)          // GET /freebook
-		freebookRoutes.GET("/:id", fbHandler.GetBookHandler)       // GET /freebook/:id
-		freebookRoutes.POST("", fbHandler.CreateBookHandler)       // POST /freebook
-		freebookRoutes.PUT("/:id", fbHandler.UpdateBookHandler)    // PUT /freebook/:id
-		freebookRoutes.DELETE("/:id", fbHandler.DeleteBookHandler) // DELETE /freebook/:id
+		freebookRoutes.GET("", fbHandler.GetFreeBooksHandler)          // GET /freebook
+		freebookRoutes.GET("/:id", fbHandler.GetFreeBookHandler)       // GET /freebook/:id
+		freebookRoutes.POST("", fbHandler.CreateFreeBookHandler)       // POST /freebook
+		freebookRoutes.PUT("/:id", fbHandler.UpdateFreeBookHandler)    // PUT /freebook/:id
+		freebookRoutes.DELETE("/:id", fbHandler.DeleteFreeBookHandler) // DELETE /freebook/:id
 	}
 
 	pbHandler := paidbook.NewHandler(db)
 
 	paidbookRoutes := r.Group("/paidbook")
 	{
-		paidbookRoutes.GET("", pbHandler.GetBooksHandler)          // GET /paidbook
-		paidbookRoutes.GET("/:id", pbHandler.GetBookHandler)       // GET /paidbook/:id
-		paidbookRoutes.POST("", pbHandler.CreateBookHandler)       // POST /paidbook
-		paidbookRoutes.PUT("/:id", pbHandler.UpdateBookHandler)    // PUT /paidbook/:id
-		paidbookRoutes.DELETE("/:id", pbHandler.DeleteBookHandler) // DELETE /paidbook/:id
+		paidbookRoutes.GET("", pbHandler.GetPaidBooksHandler)          // GET /paidbook
+		paidbookRoutes.GET("/:id", pbHandler.GetPaidBookHandler)       // GET /paidbook/:id
+		paidbookRoutes.POST("", pbHandler.CreatePaidBookHandler)       // POST /paidbook
+		paidbookRoutes.PUT("/:id", pbHandler.UpdatePaidBookHandler)    // PUT /paidbook/:id
+		paidbookRoutes.DELETE("/:id", pbHandler.DeletePaidBookHandler) // DELETE /paidbook/:id
 	}
 
 	arHandler := article.NewHandler(db)

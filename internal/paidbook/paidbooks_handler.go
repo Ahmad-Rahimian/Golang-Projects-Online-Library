@@ -22,7 +22,7 @@ func NewHandler(db *sql.DB) *Handler {
 // @Produce      json
 // @Success      200  {array}   paidbook.PaidBook
 // @Router       /paidbook [get]
-func (h *Handler) GetBooksHandler(c *gin.Context) {
+func (h *Handler) GetPaidBooksHandler(c *gin.Context) {
 	books, err := GetAll(h.DB)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -38,7 +38,7 @@ func (h *Handler) GetBooksHandler(c *gin.Context) {
 // @Param        id   path      int  true  "Book ID"
 // @Success      200  {object}  paidbook.PaidBook
 // @Router       /paidbook/{id} [get]
-func (h *Handler) GetBookHandler(c *gin.Context) {
+func (h *Handler) GetPaidBookHandler(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	book, err := GetByID(h.DB, id)
 	if err != nil {
@@ -62,7 +62,7 @@ func (h *Handler) GetBookHandler(c *gin.Context) {
 // @Param        pdf_file    formData  file   true  "PDF File"
 // @Success      201  {string}  string "created"
 // @Router       /paidbook [post]
-func (h *Handler) CreateBookHandler(c *gin.Context) {
+func (h *Handler) CreatePaidBookHandler(c *gin.Context) {
 	var book PaidBook
 
 	book.Title = c.PostForm("title")
@@ -98,7 +98,7 @@ func (h *Handler) CreateBookHandler(c *gin.Context) {
 		book.Pdf_file = pdfPath
 	}
 
-	if err := CreateBook(h.DB, book); err != nil {
+	if err := CreatePaidBook(h.DB, book); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -121,7 +121,7 @@ func (h *Handler) CreateBookHandler(c *gin.Context) {
 // @Param 		pdf_file 	formData file 	false "PDF File"
 // @Success 	200 {string}	string 	"updated"
 // @Router 		/paidbook/{id} [put]
-func (h *Handler) UpdateBookHandler(c *gin.Context) {
+func (h *Handler) UpdatePaidBookHandler(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 
 	title := c.PostForm("title")
@@ -182,7 +182,7 @@ func (h *Handler) UpdateBookHandler(c *gin.Context) {
 		Price:       ifZero(price, oldBook.Price),
 	}
 
-	if err := UpdateBook(h.DB, book); err != nil {
+	if err := UpdatePaidBook(h.DB, book); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -196,9 +196,9 @@ func (h *Handler) UpdateBookHandler(c *gin.Context) {
 // @Param        id   path      int  true  "Book ID"
 // @Success      200  {string}  string "deleted"
 // @Router       /paidbook/{id} [delete]
-func (h *Handler) DeleteBookHandler(c *gin.Context) {
+func (h *Handler) DeletePaidBookHandler(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
-	if err := DeleteBook(h.DB, id); err != nil {
+	if err := DeletePaidBook(h.DB, id); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

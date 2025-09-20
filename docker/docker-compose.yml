@@ -1,0 +1,57 @@
+version: "3.7"
+services:
+  # ####################### POSTGRES #######################
+  postgres:
+    image: postgres
+    container_name: postgres_online_library
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: d4$#%%fdf32
+      POSTGRES_DB: postgres
+      PGDATA: /data/postgres
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - online_library-network
+    restart: unless-stopped
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin_online_library
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ahmad.aghdam2@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: d4$#%%fdf32
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    ports:
+      - "8090:80"
+    networks:
+      - online_library-network
+    restart: unless-stopped
+    depends_on:
+      - postgres
+
+  ######################## REDIS #######################
+  redis:
+    image: redis:latest
+    container_name: redis_online_library
+    command: ["redis-server", "/etc/redis/redis.conf"]
+    volumes:
+      - ./redis/redis.conf:/etc/redis/redis.conf
+      - redis:/etc/redis
+    ports:
+      - "6379:6379"
+    networks:
+      - online_library-network
+
+####################### VOLUME AND NETWORKS #######################
+volumes:
+  postgres:
+  pgadmin:
+  redis:
+
+networks:
+  online_library-network:
+    driver: bridge

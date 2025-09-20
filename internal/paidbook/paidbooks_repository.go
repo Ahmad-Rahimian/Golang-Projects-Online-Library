@@ -5,6 +5,7 @@ import (
 	"log"
 )
 
+// GetAll paid books list from database and return list of paid books
 func GetAll(db *sql.DB) ([]PaidBook, error) {
 	rows, err := db.Query("SELECT id , title , summary , author, cover_image , pages , price FROM paid_books")
 	if err != nil {
@@ -24,6 +25,7 @@ func GetAll(db *sql.DB) ([]PaidBook, error) {
 	return books, nil
 }
 
+// GetByID get paid book by id from database and return paid book
 func GetByID(db *sql.DB, id int) (book PaidBook, err error) {
 	err = db.QueryRow("SELECT id , title , summary , author, cover_image , pdf_file, pages , price FROM paid_books WHERE id=$1", id).Scan(&book.ID, &book.Title, &book.Summary, &book.Author, &book.Cover_image, &book.Pdf_file, &book.Pages, &book.Price)
 	if err != nil {
@@ -32,6 +34,7 @@ func GetByID(db *sql.DB, id int) (book PaidBook, err error) {
 	return book, nil
 }
 
+// Create create new paid book in database
 func Create(db *sql.DB, book PaidBook) (err error) {
 	_, err = db.Exec("INSERT INTO paid_books (title , summary , author, cover_image , pdf_file, pages,price) VALUES ($1,$2,$3,$4,$5,$6,$7)", &book.Title, &book.Summary, &book.Author, &book.Cover_image, &book.Pdf_file, &book.Pages, &book.Price)
 	if err != nil {
@@ -40,6 +43,7 @@ func Create(db *sql.DB, book PaidBook) (err error) {
 	return err
 }
 
+// Update update paid book in database
 func Update(db *sql.DB, book PaidBook) (err error) {
 	_, err = db.Exec("UPDATE paid_books SET title=$1 ,summary=$2 , author=$3 ,cover_image=$4 , pdf_file=$5 ,pages=$6 ,price=$7 WHERE id=$8 ", &book.Title, &book.Summary, &book.Author, &book.Cover_image, &book.Pdf_file, &book.Pages, &book.Price, &book.ID)
 	if err != nil {
@@ -48,6 +52,7 @@ func Update(db *sql.DB, book PaidBook) (err error) {
 	return err
 }
 
+// Delete delete paid book from database
 func Delete(db *sql.DB, id int) (err error) {
 	_, err = db.Exec("DELETE FROM paid_books WHERE id=$1", id)
 	if err != nil {

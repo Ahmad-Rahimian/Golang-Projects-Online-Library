@@ -19,7 +19,7 @@ func Start() {
 	}
 
 	// setup router
-	r := router.SetupRouter(db)
+	r := router.SetupRouter(db, cfg, cfg.DB.JWTSecret)
 
 	// run server
 	r.Run(":8080")

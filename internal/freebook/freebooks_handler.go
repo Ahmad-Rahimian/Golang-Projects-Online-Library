@@ -51,6 +51,7 @@ func (h *Handler) GetFreeBookHandler(c *gin.Context) {
 // @Summary      Create new freebook
 // @Description  Add a new freebook with file upload
 // @Tags         freebook
+// @Security 	 BearerAuth
 // @Accept       multipart/form-data
 // @Produce      json
 // @Param        title       formData  string true  "Book Title"
@@ -106,6 +107,7 @@ func (h *Handler) CreateFreeBookHandler(c *gin.Context) {
 // @Summary 	Update freebook
 // @Description Update freebook details by ID (with optional new files)
 // @Tags 		freebook
+// @Security 	BearerAuth
 // @Accept 		multipart/form-data
 // @Produce 	json
 // @Param 		id 			path 	 int 	true  "Book ID"
@@ -187,6 +189,7 @@ func (h *Handler) UpdateFreeBookHandler(c *gin.Context) {
 // @Summary      Delete freebook
 // @Description  Delete a freebook by ID
 // @Tags         freebook
+// @Security 	 BearerAuth
 // @Param        id   path      int  true  "Book ID"
 // @Success      200  {string}  string "deleted"
 // @Router       /freebook/{id} [delete]

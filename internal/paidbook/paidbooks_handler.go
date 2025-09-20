@@ -51,6 +51,7 @@ func (h *Handler) GetPaidBookHandler(c *gin.Context) {
 // @Summary      Create new paidbook
 // @Description  Add a new paidbook with file upload
 // @Tags         paidbook
+// @Security 	 BearerAuth
 // @Accept       multipart/form-data
 // @Produce      json
 // @Param        title       formData  string true  "Book Title"
@@ -109,6 +110,7 @@ func (h *Handler) CreatePaidBookHandler(c *gin.Context) {
 // @Summary 	Update paidbook
 // @Description Update paidbook details by ID (with optional new files)
 // @Tags 		paidbook
+// @Security 	BearerAuth
 // @Accept 		multipart/form-data
 // @Produce 	json
 // @Param 		id 			path 	 int 	true  "Book ID"
@@ -193,6 +195,7 @@ func (h *Handler) UpdatePaidBookHandler(c *gin.Context) {
 // @Summary      Delete paidbook
 // @Description  Delete a paidbook by ID
 // @Tags         paidbook
+// @Security 	 BearerAuth
 // @Param        id   path      int  true  "Book ID"
 // @Success      200  {string}  string "deleted"
 // @Router       /paidbook/{id} [delete]

@@ -1,14 +1,16 @@
 Online Library
 
-version 2 :
-
 project-root/
-│
+
+├── api/  
+│ └── api.go
+|
 ├── cmd/  
 │ └── app/
 │ └── main.go  
 │
-├── internal/  
+├── internal/
+|
 │ ├── freebook/  
 │ │ ├── model.go  
 │ │ ├── repository.go  
@@ -26,17 +28,32 @@ project-root/
 │ │ ├── repository.go  
 │ │ ├── service.go  
 │ │ └── handler.go  
+| |
+│ ├── middleware/  
+│ │ └── jwt.go
 │ │
 │ └── router/  
 │ └── router.go  
 │
-├── api/  
-│ └── api.go  
-│
-├── pkg/  
-│ ├── db.go  
-│ └── config.go  
-│
+├── pkg/
+│ ├── admin-user/  
+│ │ └── create-admin.go  
+│ │
+│ ├── config/  
+│ │ ├── config.go  
+│ │ └── dev.yaml  
+│ │
+│ ├── db/  
+│ │ └── db.go  
+│ │
+│ └── redis/  
+│ | ├── redis.conf  
+│ | └── redis.go
+│ │
+│ ├── /  
+│ | └── .go
+|
+|
 ├── uploads/  
 │ ├── images  
 │ └── pdfs  
@@ -44,52 +61,3 @@ project-root/
 ├── docs/  
 ├── go.mod
 └── go.sum
-
-<!--
-
-version 1 :
-
-project-root/
-│
-├── cmd/
-│ └── app/
-│ └── main.go
-│
-├── internal/
-│ ├── domain/
-│ │ ├── freebook.go
-│ │ ├── paidbook.go
-│ │ └── article.go
-│ │
-│ ├── repository/
-│ │ ├── freebook_repository.go
-│ │ ├── paidbook_repository.go
-│ │ └── article_repository.go
-│ │
-│ ├── service/
-│ │ ├── freebook_service.go
-│ │ ├── paidbook_service.go
-│ │ └── article_service.go
-│ │
-│ ├── handler/
-│ │ ├── freebook_handler.go
-│ │ ├── paidbook_handler.go
-│ │ └── article_handler.go
-│ │
-│ └── router/
-│ └── router.go
-│
-├── api/
-│ └── api.go
-│
-├── pkg/
-│ ├── db.go
-│ └── config.go
-|
-├── uploads/
-│ ├── images
-│ └── pdfs
-│
-├── docs/
-├── go.mod
-└── go.sum -->

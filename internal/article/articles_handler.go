@@ -51,6 +51,7 @@ func (h *Handler) GetArticleHandler(c *gin.Context) {
 // @Summary      Create new article
 // @Description  Add a new article with file upload
 // @Tags         article
+// @Security 	 BearerAuth
 // @Accept       multipart/form-data
 // @Produce      json
 // @Param        title       		formData  string true  "Article Title"
@@ -100,6 +101,7 @@ func (h *Handler) CreateArticleHandler(c *gin.Context) {
 // @Summary 	Update article
 // @Description Update article details by ID (with optional new files)
 // @Tags 		article
+// @Security 	BearerAuth
 // @Accept 		multipart/form-data
 // @Produce 	json
 // @Param 		id 				path 	 int 	true  "Article ID"
@@ -167,6 +169,7 @@ func (h *Handler) UpdateArticleHandler(c *gin.Context) {
 // @Summary      Delete article
 // @Description  Delete a article by ID
 // @Tags         article
+// @Security 	 BearerAuth
 // @Param        id   path      int  true  "Article ID"
 // @Success      200  {string}  string "deleted"
 // @Router       /article/{id} [delete]

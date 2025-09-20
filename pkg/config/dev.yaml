@@ -1,8 +1,13 @@
+# dev environment config file
 app_name: "online-library"
+redis :
+  addr: "localhost:6379"
+  password: "password"
+  db: 0
 db :
   host: "localhost"
   port: 5432
-  user: "admin"
-  password: "admin-pass"
+  user: "postgres"
+  password: "d4$#%%fdf32"
   name: "online-library"
   sslmode: "disable"
